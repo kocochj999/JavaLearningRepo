@@ -1,69 +1,68 @@
+
 package common;
 
-
 public class BattleField {
-    private Human A;
-    private Human B;
-    private boolean isATurn;
+    private Character hero;
+    private Character monster;
+    private boolean isHeroTurn;
     
-    public BattleField()
+    public BattleField(Character heroName, Character monsterName, boolean turn)
     {
-        
+        this.hero = heroName;
+        this.monster = monsterName;
+        this.isHeroTurn = turn;
     }
-    
-    public BattleField(Human A, Human B, boolean isATurn)
+    public void getWinner(Character X)
     {
-        this.A = A;
-        this.B = B;
-        this.isATurn = isATurn;
+        System.out.println(X.getCharName() + " won!");
     }
-    
-    public boolean EndGame()
+    public boolean endGame()
     {
-        if (A.isDead())
+        if(hero.isDead())
         {
-            WinningAnnouncement(B);
+            getWinner(monster);
             return true;
         }
-        else if (B.isDead())
+        if(monster.isDead())
         {
-            WinningAnnouncement(A);
+            getWinner(hero);
             return true;
         }
         return false;
     }
-    
+    public void changeTurn()
+    {
+        this.isHeroTurn = !isHeroTurn;
+    }
     public void Fight()
     {
-        while(!EndGame())
+        while(!endGame())
         {
-            if (isATurn)
+            attack();
+        }
+    }
+    public void attack()
+    {
+        if(isHeroTurn)
             {
-                A.Attack(B);
+                System.out.println("======= HERO'S TURN =======");
+                hero.showInfo();
+                hero.showSkill();
+                Skill heroSkill = hero.doSkill();
+                monster.receiveDamge(heroSkill);
+                changeTurn();
             }
             else
             {
-                B.Attack(A);
+                System.out.println("======= MONSTER'S TURN =======");
+                monster.showInfo();
+                monster.showSkill();
+                Skill monsterSkill = monster.doSkill();
+                hero.receiveDamge(monsterSkill);
+                changeTurn();
             }
-            ShowWarriorInfo();
-            ChangeTurn();
-        }
     }
     
-    public void WinningAnnouncement(Human X)
-    {
-        System.out.println(X.getName() + " is the winner");
-    }
     
-    public void ChangeTurn()
-    {
-        isATurn = !isATurn;
-    }
-    
-    public void ShowWarriorInfo()
-    {
-        A.ShowInfo();
-        B.ShowInfo();
-    }
-    
+   
 }
